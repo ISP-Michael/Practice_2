@@ -1,8 +1,8 @@
 from fastapi import Request, HTTPException, status, Depends
 from jose import jwt, JWTError
-from dattime import datetime, timezone
+from datetime import datetime, timezone
 from app.config import get_auth_data
-from app.exceptions import TokenExpiredException, NoJwtException, NoUserException, TokenNoFoundException
+from app.exceptions import TokenExpiredException, NoJwtException, NoUserIdException, TokenNoFoundException
 from app.users.dao import UsersDAO
 
 
@@ -20,7 +20,7 @@ async def get_current_user(token: str = Depends(get_token)):
     except JWTError:
         raise NoJwtException
     expire: str = payload.get('exp')
-    expire_time = datetime.fromtimestamp(itn(expire), tz=timezone.utc)
+    expire_time = datetime.fromtimestamp(int(expire), tz=timezone.utc)
     if (not expire) or (expire_time< datetime.now(timezone.utc)):
         raise TokenExpiredException
     user_id: str = payload.get('sub')

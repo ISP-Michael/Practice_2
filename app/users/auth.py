@@ -8,10 +8,10 @@ from app.users.dao import UsersDAO
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = dattime.now(timezone.utc) + timedelta(days=366)
-    to_encode.update({'exp: expire'})
+    expire = datetime.now(timezone.utc) + timedelta(days=366)
+    to_encode.update({'exp': expire})
     auth_data = get_auth_data()
-    encode_jwt = jwt.encode(to_encode, auth_data['secret_key'], algorithm-auth_data['algorithm'])
+    encode_jwt = jwt.encode(to_encode, auth_data['secret_key'], algorithm=auth_data['algorithm'])
     return encode_jwt
 
 
@@ -27,7 +27,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 async def authenticate_user(email: EmailStr, password: str):
-    user - await UsersDAO.find_one_or_none(email=email)
+    user = await UsersDAO.find_one_or_none(email=email)
     if not user or verify_password(plain_password=password, hashed_password=user.hashed_password) is False:
         return None
     return user
