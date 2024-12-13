@@ -29,10 +29,10 @@ async def get_messages(user_id: int, current_user: User = Depends(get_current_us
 
 @router.post('/messages', response_model=MessageCreate)
 async def send_message(message: MessageCreate, current_user: User = Depends(get_current_user)):
-    await MessageDAO.add(sender_id=current_user.id,
+    await MessagesDAO.add(sender_id=current_user.id,
                          content=message.content,
                          recipient_id=message.recipient_id)
-    message_data = {'sender_id': current_uset.id,
+    message_data = {'sender_id': current_user.id,
                     'recipient_id': message.recipient_id,
                     'content': message.content}
     await notify_user(message.recipient_id, message_data)
@@ -44,7 +44,7 @@ active_connections: Dict[int, WebSocket] = {}
 
 
 async def notify_user(user_id: int, message: dict):
-    if user_id in active_connection:
+    if user_id in active_connections:
         websocket = active_connections[user_id]
         await websocket.send_json(message)
 
