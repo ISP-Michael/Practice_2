@@ -30,7 +30,7 @@ async def redirect_to_auth():
 
 @app.exception_handler(TokenExpiredException)
 async def token_expired_exception_handler(request: Request, exc: HTTPException):
-    return Redirectresponse(url='/auth')
+    return RedirectResponse(url='/auth')
 
 
 @app.exception_handler(TokenNoFoundException)
