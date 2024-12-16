@@ -5,7 +5,7 @@ from typing import List, Dict
 from app.chat.dao import MessagesDAO
 from app.chat.schemas import MessageRead, MessageCreate
 from app.users.dao import UsersDAO
-from app.users.dependensies import get_current_user
+from app.users.dependencies import get_current_user
 from app.users.models import User
 import asyncio
 import logging
