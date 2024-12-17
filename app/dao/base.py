@@ -40,3 +40,34 @@ class BaseDAO:
                     await session.rollback()
                     raise e
                 return new_instance
+
+    @classmethod
+    async def update(cls, data_id: int, **kwargs):
+        async with async_session_makeer() as session:
+            async with session.begin():
+                query = sqlalchemy_update(cls.model).where(cls.model.id == data_id).values(**kwargs)
+                try:
+                    await session.execute(query)
+                    await session.commit()
+                    return True
+                except SQLAlchemyError as e:
+                    await session.rollback()
+                    raise e
+    
+    @classmethod
+    async def delete(cls, data_id: int):
+        async with async_session_maker() as session:
+            async with session.begin():
+                query = sqlalchemy_delete(cls.model).where(cls.model.id == data_id):
+                    try:
+                        await session.execute(query)
+                        await session.commit()
+                        return True
+                    except SQLAlchemyError as e:
+                        await session.rollback()
+                        raise e
+
+
+
+
+

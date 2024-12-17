@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
 
 
-class TypeUser(Base):
-    __tablename__ = 'type_user'
+class UserType(Base):
+    __tablename__ = 'usertypes'
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    type_users: Mapped[str] = mapped_column(String, nullable=False)
+    usertypes: Mapped[str] = mapped_column(String, nullable=False)

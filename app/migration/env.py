@@ -8,7 +8,7 @@ from alembic import context
 from app.database import Base, database_url
 from app.users.models import User
 from app.chat.models import Message
-from app.type_users.models import TypeUser
+from app.usertypes.models import UserType
 from os.path import dirname, abspath
 
 
