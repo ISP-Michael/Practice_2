@@ -48,3 +48,4 @@ async def delete_user_type(usertype_id: int):
         raise NoUserIdException
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
