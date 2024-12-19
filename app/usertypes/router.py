@@ -1,56 +1,50 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, status
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
-from app.exceptions import UserAlreadyExistsException, IncorrectEmailOrPasswordException, PasswordMismatchException
-from app.users.auth import get_password_hash, authenticate_user, create_access_token
-from app.users.dao import UsersDAO
-from app.users.schemas import SUserRegister, SUserAuth, SUserRead
-from fastapi.templating import Jinja2Templates
+from app.exceptions import UserAlreadyExistsException, NoUserIdException
+from app.usertypes.dao import UserTypesDAO
+from app.usertypes.schemas import UserTypeRead, UserTypeCreate, UserTypeUpdate
 
 
-router = APIRouter(prefix='/auth', tags=['Auth'])
-templates = Jinja2Templates(directory='app/templates')
+router = APIRouter(prefix='/utype', tags=['UType'])
 
 
-@router.post('/register/')
-async def register_user(user_data: SUserRegister) -> dict:
-    user = await UsersDAO.find_one_or_none(email=user_data.email)
-    if user:
-        raise UserAlreadyExistsException
-    if user_data.password != user_data.password_check:
-        raise PasswordMismatchException('Пароли не совпадают')
-    hashed_password = get_password_hash(user_data.password)
-    await UsersDAO.add(name=user_data.name,
-                       email=user_data.email,
-                       hashed_password=hashed_password)
-    return {'message': 'Вы успешно зарегистрированы!'}
+@router.get('/usertypes/{usertype_id}')
+async def get_usertype(usertype_id: int):
+    usertype = await UserTypesDAO.find_one_of_none_by_id(usertype_id)
+    if not usertype:
+        raise NoUserIdException
+    return UserTypeRead(id=usertype.id, usertype=usertype.usertype)
 
 
-@router.post('/login/')
-async def auth_user(response: Response, user_data: SUserAuth):
-    check = await authenticate_user(email=user_data.email, password=user_data.password)
-    if check is None:
-        raise IncorrectEmailOrPasswordException
-    access_token= create_access_token({'sub': str(check.id)})
-    response.set_cookie(key='users_access_token', value=access_token, httponly=True)
-    return {'ok': True,
-            'access_token': access_token,
-            'refresh_token': None,
-            'message': 'Авторизация успешна!'}
+@router.get('/usertypes')
+async def get_usertypes():
+    user_types_all = await UserTypesDAO.find_all()
+    return user_types_all
 
 
-@router.post('/logout/')
-async def logout_user(response: Response):
-    response.delete_cookie(key='users_access_token')
-    return {'message': 'Пользователь успешно вышел из системы'}
+@router.post('/addUserType')
+async def create_usertype(user_type: UserTypeCreate):
+    existing_usertype = await UserTypesDAO.find_one_or_none(usertype=user_type.usertype)
+    if existing_usertype:
+        raise UserTypeAlreadyExistsException
+    await UserTypesDAO.add(usertype=user_type.usertype)
+    return {'message': 'ok'}
 
 
-@router.get('/', response_class=HTMLResponse, summary='Страница авторизации')
-async def get_categories(request: Request):
-    return templates.TemplateResponse('auth.html', {'request': request})
+@router.put('/updateUserType/{id}')
+async def update_user_type(id: int, user_type: UserTypeUpdate):
+    db_user_type = await UserTypesDAO.find_one_or_none_by_id(data_id=id)
+    if not db_user_type:
+        raise NoUserIdException
+    await UserTypesDAO.update(db_user_type, user_type)
+    return {'message': 'ok'}
 
 
-@router.get('/users', response_model=list[SUserRead])
-async def get_users():
-    users_all = await UsersDAO.find_all()
-    return [{'id': user.id, 'name': user.name} for user in users_all]
+@router.delete('/deleteUserType/{usertype_id}')
+async def delete_user_type(usertype_id: int):
+    user_type = await UserTypesDAO.delete(usertype_id)
+    if not user_type:
+        raise NoUserIdException
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+

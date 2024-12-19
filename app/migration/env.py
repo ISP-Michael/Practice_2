@@ -9,6 +9,7 @@ from app.database import Base, database_url
 from app.users.models import User
 from app.chat.models import Message
 from app.usertypes.models import UserType
+from app.assigned_tasks.models import AssignedTask, Task, Status
 from os.path import dirname, abspath
 
 
