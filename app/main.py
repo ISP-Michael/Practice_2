@@ -8,6 +8,8 @@ from app.users.router import router as users_router
 from app.chat.router import router as chat_router
 from app.usertypes.router import router as usertypes_router
 from app.assigned_tasks.router import router as assigned_tasks_router
+from app.tasks.router import router as tasks_router
+from app.status.router import router as status_router
 
 
 app = FastAPI()
@@ -25,6 +27,8 @@ app.include_router(users_router)
 app.include_router(chat_router)
 app.include_router(assigned_tasks_router)
 app.include_router(usertypes_router)
+app.include_router(tasks_router)
+app.include_router(status_router)
 
 
 @app.get('/')
