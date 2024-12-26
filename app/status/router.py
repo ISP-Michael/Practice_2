@@ -36,4 +36,4 @@ async def delete_task(id: int):
     status_to_delete = await StatusDAO.find_one_or_none_by_id(data_id=id)
     if status_task is None:
         raise Exception('Статус (который нужно удалить) не найден. Получено значение None')
-    await StatusDAO.delete(status_to_delete)app/status/router.py
+    await StatusDAO.delete(status_to_delete)

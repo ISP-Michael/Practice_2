@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8">
+		<title>METANIT.COM</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="../static/styles/crudUserType.css" type="text/css">
+		<link rel="icon" href="../static/icon_1.png">
+	</head>
+	<body>
+		<h2>Список типов пользователя</h2>
+		<div>
+			<input type="hidden" id="userTypeId">
+			<p>
+				Тип пользователя:<br>
+				<input type="text" id="userType">
+			</p>
+			<p>
+				<button id="saveBtn">Сохранить</button>
+				<button id="resetBtn">Сбросить</button>
+			</p>
+		</div>
+		<table>
+			<thead><tr><th>Тип пользователя</th><th></th></tr></thead>
+			<tbody></tbody>
+		</table>
+		<script src="{{ url_for('static', path='js/crudUserType.js') }}"></script>
+	</body>
+</html>

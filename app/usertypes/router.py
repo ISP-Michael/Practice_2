@@ -4,14 +4,23 @@ from fastapi.responses import HTMLResponse
 from app.exceptions import UserAlreadyExistsException, NoUserIdException
 from app.usertypes.dao import UserTypesDAO
 from app.usertypes.schemas import UserTypeRead, UserTypeCreate, UserTypeUpdate
+from fastapi.templating import Jinja2Templates
 
 
 router = APIRouter(prefix='/utype', tags=['UType'])
+templates = Jinja2Templates(directory='app/templates')
+
+
+@router.get('/', response_class=HTMLResponse, summary='To-Do List')
+async def get_todo_list(request: Request):
+    return templates.TemplateResponse('crudUserType.html',
+                                      {'request': request})
+
 
 
 @router.get('/usertypes/{usertype_id}')
 async def get_usertype(usertype_id: int):
-    usertype = await UserTypesDAO.find_one_of_none_by_id(usertype_id)
+    usertype = await UserTypesDAO.find_one_or_none_by_id(usertype_id)
     if not usertype:
         raise NoUserIdException
     return UserTypeRead(id=usertype.id, usertype=usertype.usertype)
@@ -25,20 +34,17 @@ async def get_usertypes():
 
 @router.post('/addUserType')
 async def create_usertype(user_type: UserTypeCreate):
-    existing_usertype = await UserTypesDAO.find_one_or_none(usertype=user_type.usertype)
-    if existing_usertype:
-        raise UserTypeAlreadyExistsException
-    await UserTypesDAO.add(usertype=user_type.usertype)
-    return {'message': 'ok'}
+    existing_usertype = await UserTypesDAO.add(usertype=user_type.usertype)
+    return existing_usertype
 
 
 @router.put('/updateUserType/{id}')
 async def update_user_type(id: int, user_type: UserTypeUpdate):
     db_user_type = await UserTypesDAO.find_one_or_none_by_id(data_id=id)
-    if not db_user_type:
+    if db_user_type is None:
         raise NoUserIdException
-    await UserTypesDAO.update(db_user_type, user_type)
-    return {'message': 'ok'}
+    result = await UserTypesDAO.update(db_user_type, user_type)
+    return result
 
 
 @router.delete('/deleteUserType/{usertype_id}')
