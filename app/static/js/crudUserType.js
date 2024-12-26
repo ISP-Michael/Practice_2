@@ -73,7 +73,7 @@ async function editUserType(userTypeId, userType) {
 
 
 async function deleteUserType(id) {
-  const response = await fetch(`/utype/deleteUserType/${id}` ,{
+  const response = await fetch(`/utype/deleteUserType/${id}`, {
     method: 'DELETE',
     headers: {'Accept': 'application/json'}
   });
