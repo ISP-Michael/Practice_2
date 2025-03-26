@@ -1,4 +1,9 @@
 .venv/
 .git/
-.env
+.python-version
+pyrightconfig.json
+pyproject.toml
+uv.lock
+amvera.yml
+**/__pycache__/
 
