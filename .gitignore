@@ -4,6 +4,7 @@
 pyrightconfig.json
 pyproject.toml
 uv.lock
-amvera.yml
 **/__pycache__/
-
+alembic.ini
+**/*.db
+db.sqlite3
